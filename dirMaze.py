@@ -15,22 +15,31 @@
 
 import MazeBuilder
 
+
+# for validating numeric input from the user
+def get_valid_number(prompt, max_limit):
+    input_str = input(prompt)
+
+    try:
+        val = int(input_str)
+        if val == 0 or val > max_limit:
+            raise ValueError
+    except ValueError:
+        while not input_str.isnumeric() or (input_str.isnumeric() and (int(input_str) < 1 or int(input_str) > max_limit)):
+            print("Value out of range. Please enter a value greater than 0 and no more than " + str(max_limit))
+            input_str = input(prompt)
+
+    return int(input_str)
+
+
 if __name__ == '__main__':
     to_hide_path = input("Enter the path to the file or directory you want to obfuscate: ")
     maze_root = input("Enter the path where you want the maze to start: ")
-    root_name = input("Enter the name of the root folder node (Leave blank for random): ")
-    layer_str = input("How many layers deep should the maze be? (Enter a number; max 20): ")
+    root_node_name = input("Enter the name of the root folder node (Leave blank for random): ")
+    layers = get_valid_number("How many layers deep should the maze be? (Enter a number; max 20): ", 20)
+    num_branches = get_valid_number("How many branches per node should there be? (Enter a number; max 7): ", 7)
 
-    try:
-        val = int(layer_str)
-        if val == 0 or val > 20:
-            raise ValueError
-    except ValueError:
-        while not layer_str.isnumeric() or (layer_str.isnumeric() and (int(layer_str) < 1 or int(layer_str) > 20)):
-            print("Invalid depth.")
-            layer_str = input("How many layers deep should the maze be? (Enter a number; max 20): ")
-
-    layers = int(layer_str)
-
-    builder = MazeBuilder.MazeBuilder()
+    builder = MazeBuilder.MazeBuilder(to_hide_path, maze_root, root_node_name, layers, num_branches)
     builder.build()
+
+
