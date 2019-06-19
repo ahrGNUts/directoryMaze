@@ -33,7 +33,7 @@ def get_valid_number(prompt, max_limit):
 
 
 if __name__ == '__main__':
-    to_hide_path = input("Enter the path to the file or directory you want to obfuscate: ")
+    to_hide_path = input("Enter the path to the file or directory you want to obfuscate: ")  # todo: error handling for empty path
     maze_root_path = input("Enter the path where you want the maze to start (Leave blank for current directory): ")
     root_node_name = input("Enter the name of the root folder node (Leave blank for random): ")
     layers = get_valid_number("How many layers deep should the maze be? (Enter a number; max 20): ", 20)
