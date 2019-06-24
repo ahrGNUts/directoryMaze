@@ -6,7 +6,6 @@ import json
 from shutil import rmtree
 DEFAULT_NAME_LEN = 7
 
-
 class MazeBuilder:
 
     def __init__(self, to_hide_path, maze_root_path, root_node_name, layers, num_branches):
@@ -16,6 +15,7 @@ class MazeBuilder:
         self.layers = layers
         self.num_branches = num_branches
         self.debug_mode = True
+        self.endpoint_path = self.maze_root_path + '/' + self.root_node_name + '/'
 
     def build(self):
         # cleanup previous dir tree
@@ -29,6 +29,10 @@ class MazeBuilder:
         current_depth = 1
         # recursively create directory tree
         self.__create_branches(root_node.path, root_node, current_depth)
+        # randomly walk through tree to find random end node (sets self.endpoint_path)
+        self.__find_end_node_path(root_node)
+        # todo: move file to self.endpoint_path
+
 
     def __set_root_path(self, maze_root_path):
         if maze_root_path == "":
@@ -76,3 +80,9 @@ class MazeBuilder:
                 rmtree(data['prevRoot'])
         except FileNotFoundError:
             return
+
+    def __find_end_node_path(self, head):
+        if len(head.children) > 0:
+            rnd = random.randrange(0, len(head.children))
+            self.endpoint_path += head.children[rnd].name + '/'
+            self.__find_end_node_path(head.children[rnd])
