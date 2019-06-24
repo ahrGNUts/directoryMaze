@@ -41,10 +41,14 @@ class MazeBuilder:
     def __create_branches(self, path, parent, depth):
         if depth < self.layers:
             for i in range(self.num_branches):
-                name = self.__generate_dir_name(DEFAULT_NAME_LEN)
-                # todo: if name exists already in current dir, generate new one
+                name = self.__verify_dir_name(self.__generate_dir_name(DEFAULT_NAME_LEN), path)
                 p = path + '/' + name
                 os.mkdir(p)
                 node = Node.Node(path, name)
                 parent.append(node)
                 self.__create_branches(p, node, depth+1)
+
+    def __verify_dir_name(self, name, path):
+        while name in os.listdir(path):
+            name = self.__generate_dir_name(DEFAULT_NAME_LEN)
+        return name
