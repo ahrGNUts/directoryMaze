@@ -1,7 +1,7 @@
 class Node:
     def __init__(self, path, name):
         self.name = name
-        self.path = path
+        self.path = path + '/' + name
         self.children = []
 
     def append(self, child):
