@@ -2,6 +2,8 @@ import os
 import random
 import string
 import Node
+import json
+from shutil import rmtree
 DEFAULT_NAME_LEN = 7
 
 
@@ -13,11 +15,17 @@ class MazeBuilder:
         self.root_node_name = self.__set_root_node_name(root_node_name)
         self.layers = layers
         self.num_branches = num_branches
+        self.debug_mode = True
 
     def build(self):
+        # cleanup previous dir tree
+        if self.debug_mode:
+            self.__remove_prev_root()
         # create root node
         root_node = Node.Node(self.maze_root_path, self.root_node_name)
         os.mkdir(self.maze_root_path + '/' + self.root_node_name)
+        if self.debug_mode:
+            self.__set_cleanup_info()
         current_depth = 1
         # recursively create directory tree
         self.__create_branches(root_node.path, root_node, current_depth)
@@ -52,3 +60,19 @@ class MazeBuilder:
         while name in os.listdir(path):
             name = self.__generate_dir_name(DEFAULT_NAME_LEN)
         return name
+
+    def __set_cleanup_info(self):
+        try:
+            with open('debuginfo.json', 'w') as file:
+                json.dump({"prevRoot": self.maze_root_path + '/' + self.root_node_name}, file)
+        except FileNotFoundError:
+            with open('debuginfo.json', 'a') as file:
+                json.dump({"prevRoot": self.maze_root_path + '/' + self.root_node_name}, file)
+
+    def __remove_prev_root(self):
+        try:
+            with open('debuginfo.json', 'r') as file:
+                data = json.load(file)
+                rmtree(data['prevRoot'])
+        except FileNotFoundError:
+            return
