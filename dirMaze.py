@@ -36,6 +36,7 @@ def get_valid_number(prompt, max_limit):
 
 # for validating that the specified file exists
 # prompt will be a string, empty_ok will be a boolean to catch cases where blank path is accepted
+# todo: throw error on forbidden paths (files that make the system go [/, /usr, /opt, Windows dirs, etc.])
 def get_valid_path(prompt, empty_ok=False):
     path = input(prompt)
 
