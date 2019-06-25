@@ -3,13 +3,14 @@ import random
 import string
 import Node
 import json
-from shutil import rmtree
+from shutil import rmtree, move
 DEFAULT_NAME_LEN = 7
 
 class MazeBuilder:
 
     def __init__(self, to_hide_path, maze_root_path, root_node_name, layers, num_branches):
         self.to_hide_path = to_hide_path
+        self.to_hide_filename = self.__parse_payload_filename(to_hide_path)
         self.maze_root_path = self.__set_root_path(maze_root_path)
         self.root_node_name = self.__set_root_node_name(root_node_name)
         self.layers = layers
@@ -31,8 +32,8 @@ class MazeBuilder:
         self.__create_branches(root_node.path, root_node, current_depth)
         # randomly walk through tree to find random end node (sets self.endpoint_path)
         self.__find_end_node_path(root_node)
-        # todo: move file to self.endpoint_path
-
+        # move file to end node
+        self.__move_payload()
 
     def __set_root_path(self, maze_root_path):
         if maze_root_path == "":
@@ -86,3 +87,32 @@ class MazeBuilder:
             rnd = random.randrange(0, len(head.children))
             self.endpoint_path += head.children[rnd].name + '/'
             self.__find_end_node_path(head.children[rnd])
+
+    def __parse_payload_filename(self, path):
+        # if we split a path of a directory that has a trailing slash, the last element will be an empty string
+        # this will make sure we don't get a blank filename
+        if not path.split('/')[-1]:
+            return path.split('/')[-2]
+        return path.split('/')[-1]
+
+    def __move_payload(self):
+        # todo: error handling
+        move(self.to_hide_path, self.endpoint_path + self.to_hide_filename)
+
+    def generate_mapfile(self):
+        filename = self.maze_root_path + '/' + self.root_node_name + '_map.txt'
+        lines = [
+            "The path to your file is as follows:\r\n",
+            self.endpoint_path + '/' + self.to_hide_filename
+        ]
+
+        with open(filename, 'w+') as file:
+            file.writelines(lines)
+
+    def completion_message(self):
+        print('Done.')
+        print("A file containing the path to your file has been created at:")
+        print(self.maze_root_path + '/' + self.root_node_name + '_map.txt')
+        print("")
+        print("The path in the file is: ")
+        print(self.endpoint_path + self.to_hide_filename)

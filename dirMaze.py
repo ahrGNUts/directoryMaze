@@ -1,5 +1,5 @@
 # Copyright 2019 Patrick Strube
-# VERSION 0.8
+# VERSION 0.9
 
 # directoryMaze is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
@@ -64,5 +64,7 @@ if __name__ == '__main__':
 
         builder = MazeBuilder.MazeBuilder(to_hide_path, maze_root_path, root_node_name, layers, num_branches)
         builder.build()
+        builder.generate_mapfile()
+        builder.completion_message()
     except KeyboardInterrupt:
         print("\nOperation cancelled. Now exiting...")
