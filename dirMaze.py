@@ -1,4 +1,5 @@
 # Copyright 2019 Patrick Strube
+# VERSION 0.8
 
 # directoryMaze is free software: you can redistribute it and/or modify it under
 # the terms of the GNU General Public License as published by the Free Software
