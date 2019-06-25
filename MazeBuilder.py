@@ -28,6 +28,7 @@ class MazeBuilder:
         if self.debug_mode:
             self.__set_cleanup_info()
         current_depth = 1
+        # todo: progress bar or spinner while the tree is being created
         # recursively create directory tree
         self.__create_branches(root_node.path, root_node, current_depth)
         # randomly walk through tree to find random end node (sets self.endpoint_path)
