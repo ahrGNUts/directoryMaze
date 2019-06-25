@@ -68,6 +68,7 @@ class MazeBuilder:
         return name
 
     def __set_cleanup_info(self):
+        # todo: set info for old map file
         try:
             with open('debuginfo.json', 'w') as file:
                 json.dump({"prevRoot": self.maze_root_path + '/' + self.root_node_name}, file)
@@ -82,7 +83,9 @@ class MazeBuilder:
                 rmtree(data['prevRoot'])
         except FileNotFoundError:
             return
-
+    # todo: general cleanup method that acts as a caller for the cleanup methods that actually clean
+    # todo: cleanup method that deletes the old map file
+    # todo: maybe a testing method that dynamically creates the dirs and test files
     def __find_end_node_path(self, head):
         if len(head.children) > 0:
             rnd = random.randrange(0, len(head.children))
