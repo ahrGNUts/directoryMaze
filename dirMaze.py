@@ -14,6 +14,7 @@
 # you can find it here: https://www.gnu.org/licenses/gpl-3.0.en.html
 
 import MazeBuilder
+from os.path import exists
 
 
 # for validating numeric input from the user
@@ -32,9 +33,28 @@ def get_valid_number(prompt, max_limit):
     return int(input_str)
 
 
+# for validating that the specified file exists
+# prompt will be a string, empty_ok will be a boolean to catch cases where blank path is accepted
+def get_valid_path(prompt, empty_ok=False):
+    path = input(prompt)
+
+    if empty_ok and not path:
+        return path
+
+    try:
+        if not exists(path):
+            raise FileNotFoundError
+    except FileNotFoundError:
+        while not exists(path):
+            print("File not found. Please check your path and enter it again.")
+            path = input(prompt)
+
+    return path
+
+
 if __name__ == '__main__':
-    to_hide_path = input("Enter the path to the file or directory you want to obfuscate: ")  # todo: error handling for empty path
-    maze_root_path = input("Enter the path where you want the maze to start (Leave blank for current directory): ")
+    to_hide_path = get_valid_path("Enter the path to the file or directory you want to obfuscate: ")
+    maze_root_path = get_valid_path("Enter the path where you want the maze to start (Leave blank for current directory): ", True)
     root_node_name = input("Enter the name of the root folder node (Leave blank for random): ")
     layers = get_valid_number("How many layers deep should the maze be? (Enter a number; max 20): ", 20)
     num_branches = get_valid_number("How many branches per node should there be? (Enter a number; max 7): ", 7)
